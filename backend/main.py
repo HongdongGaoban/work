@@ -17,6 +17,7 @@ from fastapi.responses import FileResponse
 
 from simulation.parameters import PlantJobRequest
 from simulation.animator import generate_video
+from simulation.fate import compute_fate
 
 app = FastAPI(title="Plant Genesis Simulator API", version="0.1.0")
 
@@ -45,12 +46,20 @@ def _run_job(job_id: str, params: PlantJobRequest) -> None:
         def _update(p: float) -> None:
             JOBS[job_id]["progress"] = round(p * 100)
 
+        fate = compute_fate(params)
         generate_video(params, output_path, progress_callback=_update)
 
         JOBS[job_id].update(
             status="done",
             progress=100,
             video_path=output_path,
+            fate={
+                "survived": fate.survived,
+                "risk_score": round(fate.risk_score, 3),
+                "extinction_era": fate.extinction_era,
+                "extinction_reason": fate.extinction_reason,
+                "survival_note": fate.survival_note,
+            },
         )
     except Exception as exc:
         JOBS[job_id].update(status="error", error=str(exc))
