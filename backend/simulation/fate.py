@@ -1,6 +1,9 @@
 """
 Determines whether a plant survives to modern times based on its parameters
 and the environmental conditions it was adapted to.
+
+compute_fate() runs the heuristic calculation.
+If ANTHROPIC_API_KEY is set, the narrative text is then enhanced via Claude.
 """
 from __future__ import annotations
 
@@ -104,3 +107,17 @@ def compute_fate(params: PlantJobRequest) -> PlantFate:
         extinction_reason=reason_str,
         survival_note="",
     )
+
+
+def compute_fate_with_ai(params: PlantJobRequest) -> PlantFate:
+    """
+    Compute fate heuristically, then enhance the narrative with Claude if available.
+    This is the preferred entry-point for the animator.
+    """
+    fate = compute_fate(params)
+    try:
+        from .ai_narrator import enhance_fate_narrative
+        fate = enhance_fate_narrative(params, fate)
+    except Exception:
+        pass  # AI enhancement is always optional
+    return fate
