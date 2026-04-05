@@ -14,7 +14,7 @@ import imageio.v2 as imageio
 from .parameters import PlantJobRequest
 from .lsystem import generate_sentences
 from .renderer import render_frame, CANVAS_W, CANVAS_H
-from .fate import compute_fate
+from .fate import compute_fate_with_ai as compute_fate
 
 
 def _compute_base_step(max_iter: int) -> float:
@@ -140,6 +140,7 @@ def generate_video(
                     fate_survived=fate.survived,
                     extinction_era=fate.extinction_era,
                     survival_note=fate.survival_note,
+                    extinction_note=fate.survival_note if not fate.survived else "",
                 )
 
             writer.append_data(frame)
