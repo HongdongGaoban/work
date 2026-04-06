@@ -1,4 +1,5 @@
 import math
+import random
 from typing import Dict, List, Tuple
 from .parameters import GrowthPattern
 
@@ -71,6 +72,8 @@ def get_turtle_path(
     angle_deg: float,
     step: float,
     start_width: float,
+    angle_noise: float = 0.0,
+    seed: int = 0,
 ) -> Tuple[List[Tuple], List[Tuple]]:
     """
     Interpret L-System sentence as turtle graphics.
@@ -78,12 +81,16 @@ def get_turtle_path(
     Returns:
         segments : list of (x1, y1, x2, y2, width, depth)
         leaves   : list of (x, y, angle_deg, depth)
+
+    angle_noise adds organic randomness (±degrees) to each branch rotation.
+    seed makes the noise reproducible per plant.
     """
     stack = []
     x, y = 0.0, 0.0
     direction = 90.0  # pointing upward
     width = start_width
     depth = 0
+    _rng = random.Random(seed)
 
     segments: List[Tuple] = []
     leaves: List[Tuple] = []
@@ -98,9 +105,11 @@ def get_turtle_path(
             x += step * math.cos(math.radians(direction))
             y += step * math.sin(math.radians(direction))
         elif ch == "+":
-            direction += angle_deg
+            jitter = _rng.uniform(-angle_noise, angle_noise) if angle_noise > 0 else 0.0
+            direction += angle_deg + jitter
         elif ch == "-":
-            direction -= angle_deg
+            jitter = _rng.uniform(-angle_noise, angle_noise) if angle_noise > 0 else 0.0
+            direction -= angle_deg + jitter
         elif ch == "[":
             stack.append((x, y, direction, width, depth))
             width = max(0.5, width * 0.65)

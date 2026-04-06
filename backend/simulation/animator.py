@@ -23,6 +23,19 @@ def _compute_base_step(max_iter: int) -> float:
     return max(4.0, min(22.0, target_h / (approx ** 0.65)))
 
 
+def _wind_sway(t_sec: float) -> float:
+    """Multi-frequency wind simulation for natural-looking sway.
+
+    Combines a primary low-frequency sway with mid and high-frequency
+    turbulence components, mimicking real wind gusts.
+    """
+    return (
+        2.0 * math.sin(t_sec * math.pi) +
+        0.6 * math.sin(t_sec * 2.3 * math.pi + 0.5) +
+        0.25 * math.sin(t_sec * 5.7 * math.pi + 1.2)
+    )
+
+
 def generate_video(
     params: PlantJobRequest,
     output_path: str,
@@ -42,6 +55,11 @@ def generate_video(
     leaf_color = tuple(params.leaf_color)
 
     fate = compute_fate(params)
+
+    # Reproducible per-plant seed for organic branch angle variation
+    plant_seed = hash(params.name + params.era.value) & 0xFFFF
+    # 5° of angle noise gives natural-looking variation without losing plant form
+    angle_noise = 5.0
 
     # ── Phase boundaries ────────────────────────────────────────────
     PHASE1_END = 0.65   # growth
@@ -92,14 +110,15 @@ def generate_video(
                     sway_deg=0.0,
                     fate_progress=0.0,
                     fate_survived=None,
+                    angle_noise=angle_noise,
+                    plant_seed=plant_seed,
                 )
 
             # ── Phase 2: Mature sway ─────────────────────────────────
             elif global_t <= PHASE2_END:
                 sentence = sentences[max_iter]
-                # Sway: ±2.5° sine wave, 2-second period
                 t_sec = i / params.fps
-                sway = 2.5 * math.sin(t_sec * math.pi)
+                sway = _wind_sway(t_sec)
 
                 frame = render_frame(
                     sentence=sentence,
@@ -114,6 +133,8 @@ def generate_video(
                     sway_deg=sway,
                     fate_progress=0.0,
                     fate_survived=None,
+                    angle_noise=angle_noise,
+                    plant_seed=plant_seed,
                 )
 
             # ── Phase 3: Fate reveal ─────────────────────────────────
@@ -123,7 +144,7 @@ def generate_video(
 
                 # Sway fades out as fate takes over
                 t_sec = i / params.fps
-                sway = 2.5 * math.sin(t_sec * math.pi) * max(0, 1.0 - phase_t * 2)
+                sway = _wind_sway(t_sec) * max(0, 1.0 - phase_t * 2)
 
                 frame = render_frame(
                     sentence=sentence,
@@ -140,6 +161,8 @@ def generate_video(
                     fate_survived=fate.survived,
                     extinction_era=fate.extinction_era,
                     survival_note=fate.survival_note,
+                    angle_noise=angle_noise,
+                    plant_seed=plant_seed,
                 )
 
             writer.append_data(frame)
