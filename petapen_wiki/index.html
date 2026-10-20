@@ -1,0 +1,883 @@
+<title>ペタペン攻略wiki</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=BIZ+UDPGothic:wght@400;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: 攻略wiki定番の「固定ヘッダー＋左サイドメニュー＋本文」。スマホではメニューを折りたたみ。氷原の淡い青地にペンギンのくちばし色をアクセントに。 */
+:root{
+  --bg:#eef4f8; --surface:#ffffff; --side:#e3ecf3; --ink:#15243a; --muted:#56687d; --line:#d2dee8;
+  --accent:#e07a22; --accent-soft:#fdebd9; --link:#1f6ea8; --head:#183a5c; --head-ink:#f4f9fc;
+  --ss:#c93a3a; --s:#d9771c; --a:#2f8a57; --b:#2f6fb0; --c:#7a8796;
+  --note:#fff6e5; --note-line:#e8c27a; --warn:#fde9e7; --warn-line:#e09a92;
+  --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;
+  --f-body:"BIZ UDPGothic","Hiragino Sans","Yu Gothic UI","Meiryo",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d151f; --surface:#142030; --side:#111c29; --ink:#e2ebf4; --muted:#93a6ba; --line:#253649;
+  --accent:#f09a4c; --accent-soft:#3a2614; --link:#7cc0ee; --head:#0a1520; --head-ink:#e2ebf4;
+  --ss:#f07a72; --s:#f2a050; --a:#5cc489; --b:#6fa8e6; --c:#9aa8b6;
+  --note:#2b2414; --note-line:#7a6430; --warn:#33191a; --warn-line:#8a4a45; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d151f; --surface:#142030; --side:#111c29; --ink:#e2ebf4; --muted:#93a6ba; --line:#253649;
+  --accent:#f09a4c; --accent-soft:#3a2614; --link:#7cc0ee; --head:#0a1520; --head-ink:#e2ebf4;
+  --ss:#f07a72; --s:#f2a050; --a:#5cc489; --b:#6fa8e6; --c:#9aa8b6;
+  --note:#2b2414; --note-line:#7a6430; --warn:#33191a; --warn-line:#8a4a45; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.75}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--head)}
+a{color:var(--link);text-decoration:none}
+a:hover{text-decoration:underline}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+
+.site-head{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--head);color:var(--head-ink);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-bottom:3px solid var(--accent)}
+.logo{display:flex;align-items:center;gap:10px;color:var(--head-ink);font-family:var(--f-display);font-weight:900;font-size:19px;letter-spacing:.02em}
+.logo:hover{text-decoration:none}
+.logo small{display:block;font-family:var(--f-body);font-weight:400;font-size:11px;opacity:.75;letter-spacing:.04em}
+.head-tools{margin-left:auto;display:flex;gap:8px;align-items:center;flex:1 1 240px;justify-content:flex-end}
+.search{flex:1 1 200px;max-width:320px;padding:7px 12px;border-radius:999px;border:1px solid transparent;background:rgba(255,255,255,.14);color:var(--head-ink);font:inherit;font-size:14px}
+.search::placeholder{color:var(--head-ink);opacity:.6}
+.menu-btn{display:none;background:var(--accent);color:#fff;border:0;border-radius:6px;padding:7px 12px;font:inherit;font-weight:700;cursor:pointer;white-space:nowrap;flex:none}
+
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1180px;margin:0 auto;gap:24px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+.side{background:var(--side);border:1px solid var(--line);border-radius:8px;padding:14px 12px;align-self:start;position:sticky;top:calc(env(safe-area-inset-top,0px) + 72px);max-height:calc(100vh - 92px);overflow:auto}
+.side h4{font-family:var(--f-display);font-size:13px;margin:14px 6px 4px;color:var(--muted);letter-spacing:.06em}
+.side h4:first-child{margin-top:0}
+.side ul{list-style:none;margin:0;padding:0}
+.side li a{display:block;padding:3px 8px;border-radius:5px;color:var(--ink);font-size:14px}
+.side li a:hover{background:var(--surface);text-decoration:none}
+.side li a.on{background:var(--accent);color:#fff;font-weight:700}
+.side .sub a{padding-left:20px;font-size:13px;color:var(--muted)}
+
+main{min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:22px clamp(16px,3vw,32px) 32px}
+.crumb{font-size:12px;color:var(--muted);margin-bottom:6px}
+.updated{font-size:12px;color:var(--muted);margin:-4px 0 18px}
+h1{font-family:var(--f-display);font-weight:900;font-size:clamp(22px,3.2vw,28px);line-height:1.35;margin:0 0 8px;text-wrap:balance}
+h2{font-family:var(--f-display);font-weight:700;font-size:20px;margin:34px 0 12px;padding:6px 12px;background:var(--head);color:var(--head-ink);border-radius:6px;text-wrap:balance}
+h3{font-family:var(--f-display);font-weight:700;font-size:17px;margin:24px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent);text-wrap:balance}
+p{margin:0 0 12px;max-width:72ch}
+ul.list,ol.list{margin:0 0 14px;padding-left:1.4em;max-width:72ch}
+ul.list li,ol.list li{margin:3px 0}
+.toc{border:1px solid var(--line);border-radius:6px;padding:10px 16px;margin:0 0 20px;background:var(--bg);display:inline-block;min-width:min(100%,320px)}
+.toc b{font-family:var(--f-display);font-size:14px}
+.toc ol{margin:4px 0 0;padding-left:1.3em;font-size:14px}
+
+.tbl{overflow-x:auto;margin:0 0 16px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:var(--side);font-weight:700;white-space:nowrap}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl.tier th:first-child,.tbl.tier td:first-child{width:56px;text-align:center}
+
+.tier-badge{display:inline-block;min-width:30px;text-align:center;font-family:var(--f-display);font-weight:900;font-size:13px;color:#fff;border-radius:4px;padding:0 6px;line-height:1.7}
+.t-SS{background:var(--ss)}.t-S{background:var(--s)}.t-A{background:var(--a)}.t-B{background:var(--b)}.t-C{background:var(--c)}.t-none{background:var(--c);opacity:.7}
+.tag{display:inline-block;font-size:12px;border:1px solid var(--line);border-radius:999px;padding:0 8px;margin:0 4px 4px 0;color:var(--muted);background:var(--bg)}
+.tag.hot{border-color:var(--accent);color:var(--accent)}
+
+.note,.warn{border-left:4px solid var(--note-line);background:var(--note);padding:10px 14px;border-radius:0 6px 6px 0;margin:0 0 16px;font-size:14px;max-width:80ch}
+.warn{border-left-color:var(--warn-line);background:var(--warn)}
+.note b:first-child,.warn b:first-child{font-family:var(--f-display)}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin:0 0 16px}
+.card{display:block;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg);color:var(--ink)}
+.card:hover{border-color:var(--accent);text-decoration:none}
+.card b{font-family:var(--f-display);font-size:15px;display:block}
+.card span{font-size:12px;color:var(--muted)}
+
+.news{list-style:none;margin:0 0 16px;padding:0;border:1px solid var(--line);border-radius:6px}
+.news li{display:grid;grid-template-columns:108px minmax(0,1fr);gap:10px;padding:8px 12px;border-top:1px solid var(--line);font-size:14px}
+.news li:first-child{border-top:0}
+.news time{color:var(--muted);font-variant-numeric:tabular-nums;font-size:13px}
+
+.hero-head{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:8px}
+.hero-mark{width:64px;height:64px;border-radius:14px;display:grid;place-items:center;font-family:var(--f-display);font-weight:900;font-size:26px;color:#fff;flex:none}
+.recipe{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 14px}
+.mat{background:var(--accent-soft);border:1px solid var(--accent);color:var(--ink);border-radius:6px;padding:2px 10px;font-weight:700;font-size:14px}
+.plus{color:var(--muted);font-weight:700}
+.code{font-family:var(--f-mono);font-size:15px;background:var(--bg);border:1px dashed var(--line);border-radius:5px;padding:2px 8px;letter-spacing:.04em}
+.copy{font:inherit;font-size:12px;padding:2px 10px;border-radius:5px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;margin-left:6px}
+.copy:hover{border-color:var(--accent)}
+.src{font-size:12px;color:var(--muted)}
+.qa dt{font-weight:700;margin-top:14px}
+.qa dt::before{content:"Q. ";color:var(--accent);font-family:var(--f-display);font-weight:900}
+.qa dd{margin:4px 0 0 0;padding-left:1.6em;max-width:72ch}
+.qa dd::before{content:"A. ";margin-left:-1.6em;color:var(--link);font-family:var(--f-display);font-weight:900}
+.results{list-style:none;padding:0;margin:0}
+.results li{padding:8px 0;border-bottom:1px solid var(--line)}
+.foot{font-size:12px;color:var(--muted);text-align:center;padding:0 16px 30px}
+.board{display:flex;flex-direction:column;gap:6px;margin:0 0 16px}
+.board .slot{display:grid;grid-template-columns:90px repeat(5,minmax(0,1fr));gap:4px;font-size:12px}
+.board .slot div{border:1px solid var(--line);border-radius:4px;padding:4px;text-align:center;background:var(--bg)}
+.board .slot .lab{background:transparent;border:0;text-align:left;font-weight:700;color:var(--muted)}
+
+@media (max-width:860px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .menu-btn{display:inline-block}
+  .side{display:none;position:static;max-height:none}
+  .side.open{display:block}
+  .news li{grid-template-columns:minmax(0,1fr);gap:0}
+}
+@media (prefers-reduced-motion:no-preference){.card,.side li a{transition:background .15s,border-color .15s}}
+</style>
+
+<header class="site-head">
+  <a class="logo" href="#top" data-go="top">
+    <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><ellipse cx="17" cy="19" rx="13" ry="14" fill="#1b2a3d"/><ellipse cx="17" cy="21" rx="8.5" ry="10" fill="#ffffff"/><circle cx="13.5" cy="15" r="1.8" fill="#1b2a3d"/><circle cx="20.5" cy="15" r="1.8" fill="#1b2a3d"/><path d="M14 18.5 L20 18.5 L17 22 Z" fill="#e07a22"/></svg>
+    <span>ペタペン攻略wiki<small>ペタペタペンギン団 非公式まとめ</small></span>
+  </a>
+  <div class="head-tools">
+    <input id="q" class="search" type="search" placeholder="ページ内検索（例：ワニキング、コード）" aria-label="wiki内を検索">
+    <button id="menuBtn" class="menu-btn" type="button" aria-expanded="false" aria-controls="side">メニュー</button>
+  </div>
+</header>
+
+<div class="shell">
+  <nav id="side" class="side" aria-label="wikiメニュー"></nav>
+  <main id="main"></main>
+</div>
+<p class="foot">当wikiは非公式のファンまとめです。ゲーム内の画像・名称等の権利はMOREFUN (H.K.) LIMITEDに帰属します。情報は2026年10月20日時点で各攻略サイト・掲示板・公式発表を突き合わせて整理したものです。</p>
+
+<script>
+const UPDATED = "2026/10/20";
+
+/* ---------- ヒーローデータ ---------- */
+const COMMON_LV = {3:"攻撃力+10%",9:"攻撃速度+10%",15:"攻撃力・攻撃速度+10%"};
+const HEROES = [
+ {id:"wani",name:"ワニキング",tier:"SS",reroll:"SS",role:"アタッカー",range:"近接",
+  recipe:["牛頭戦士","大剣ペンギン","戦士"],
+  obtain:["ヒーロー募集（低確率）","未入手なら氷晶3000個で交換（ヒーロー画面「解放待ち」）"],
+  lv6:"スキル「破滅の咆哮」解放",lv12:"スキル「ブラストフィスト」解放",
+  skills:[["破鎧","全ての敵の防御力-20"],["渾身の一撃","8%の確率で攻撃力3000%の物理ダメージ＋3秒スタン"],["ハンマー攻撃","8%の確率で重撃。範囲内の敵に攻撃力1500%の物理ダメージ"],["破滅の咆哮（Lv6）","範囲内の敵に攻撃力5000%の物理ダメージ"],["ブラストフィスト（Lv12）","同じ対象に連続でダメージを与えるたび+5%（最大+100%）"]],
+  place:"上段の中央〜右寄り。スタンさせた敵に遠距離ヒーローや相方の攻撃が当たりやすくなる。",
+  pros:["神話屈指の攻撃力と範囲攻撃","全体防御デバフ＋スタンで味方の火力も伸ばす","初心者評価もSS。早めに入手したい1体"],
+  cons:["素材に伝説ヒーローを含み、合成事故（素材を別の合成に使ってしまう）が起きやすい"],
+  memo:"Lv12（ブラストフィスト解放）が最初の育成目標。Lv16以降は専用武器（ゲーム内表記「聖物」）の解放が必要。不朽ヒーロー「アレス」の素材。"},
+ {id:"cat",name:"ブラストネコ",tier:"SS",reroll:"―",role:"アタッカー",range:"遠隔",
+  recipe:["嵐の魔術師","銃士","弓術士","レンジャー"],
+  obtain:["イベント限定（募集・氷晶交換は不可）","アカウント作成から一定日数が経つとイベントで入手用アイテムが出現"],
+  lv6:"スキル「弱点攻略」解放",lv12:"自身の炎ダメージ+100%",
+  skills:[["気力旺盛","味方全体の攻撃速度+10%"],["全力突撃","移動後の次の通常攻撃が攻撃力1000%の炎ダメージ＋1秒スタン"],["弱点攻略（Lv6）","同じ対象に3回ダメージを与えるごとに攻撃力3000%の固定ダメージを追加"],["火力全開（究極）","15秒間、巨大大砲で範囲ダメージを与える"]],
+  place:"中段の左寄り。序盤から火力をぶつけていく。",
+  pros:["遠隔最強クラスの火力。特にボス・大型敵に強い","味方全体の攻撃速度バフ持ち"],
+  cons:["イベント限定で入手機会が少ない","素材が厳冬の心（嵐の魔術師）と競合する"],
+  memo:"氷晶を多く使ってでも取る価値があると評価されている。不朽ヒーロー「イグニス」の素材。"},
+ {id:"coin",name:"コイン式機械",tier:"SS",reroll:"B",role:"サポート",range:"近接",
+  recipe:["大剣ペンギン","演奏家","鬼武者"],
+  obtain:["ヒーロー募集（低確率）","未入手なら氷晶3000個で交換（優先度：中）"],
+  lv6:"究極スキルに必要な魔力-20%",lv12:"スキル発動時、20%の確率で幸運コインを1枚追加獲得",
+  skills:[["お金の威力","全ての敵の防御力-20"],["回収、装填！","通常タイプの敵を1体倒し、幸運コイン1枚に変える"]],
+  place:"敵の出現地点の近く（画面端・左下など）で、強力なアタッカーより前。後ろに置くと雑魚を先に倒されてコインを回収できない。",
+  pros:["幸運コインを大量に確保でき、高難易度ほど必須","剣霊・終結者のコイン強化と相性抜群"],
+  cons:["単体では火力が出ない。アタッカーが揃ってからの方が活きる"],
+  memo:"妖精シンガーとのセット運用が基本形。リセマラ評価が低いのは「序盤には早い」ため。"},
+ {id:"fairy",name:"妖精シンガー",tier:"SS",reroll:"A",role:"サポート",range:"遠隔",
+  recipe:["白梟投手","レンジャー","元素霊","元素霊"],
+  obtain:["ヒーロー募集（低確率）","未入手なら氷晶3000個で交換"],
+  lv6:"即興歌唱の魔力獲得量+3%",lv12:"全スキルの魔力回復量+100%",
+  skills:[["魔力の源","味方全体の魔力回復速度+5%"],["即興歌唱","8%の確率で範囲内の敵に攻撃力2000%の自然ダメージ＋魔力6%回復"],["やさしい旋律","範囲内の味方の魔力を5%回復"]],
+  place:"最下段の中央あたりから後方支援。",
+  pros:["究極スキルの回転率を大きく上げる貴重な支援役","中盤までに2〜3体揃えると安定"],
+  cons:["自身の火力は低め","アタッカーやコイン式機械がいないと真価を発揮しない"],
+  memo:"神話を数体持ってから入手すると効果的。不朽ヒーロー「かぐや姫」の素材。"},
+ {id:"kenrei",name:"剣霊",tier:"S",reroll:"SS",role:"アタッカー／バフ",range:"近接",
+  recipe:["時空砲兵","銃士","十字軍"],
+  obtain:["ヒーロー募集（低確率）","未入手なら氷晶3000個で交換"],
+  lv6:"スキル「剣式・吹雪」解放",lv12:"剣式・天心の基礎効果+1.5%",
+  skills:[["剣式・無我","味方全体の攻撃力+10%"],["剣式・天心","命中時、対象の残りHP0.3%分の固定ダメージ。幸運コインで強化するたび+0.3%"],["剣式・横竹","16%の確率で剣気を放ち範囲内に攻撃力2200%の物理ダメージ"],["剣式・燕返","8%の確率で前方に4連斬、攻撃力1000%の物理ダメージ"],["剣式・吹雪（Lv6）","1秒間の剣風。0.1秒ごとに攻撃力360%の物理ダメージ"]],
+  place:"スタン持ちヒーローの隣。中段が攻撃の要、ソロなら上段も可。",
+  pros:["割合ダメージでボスを削れる","味方全体の攻撃力バフ","共同作戦エクストラ以上ではLv12以上の剣霊が定番"],
+  cons:["素材に伝説ヒーローを含み、完成まで時間がかかる"],
+  memo:"2025/8/14のアップデートでボイスが渋い声に変更。不朽ヒーロー「アレス」の素材。"},
+ {id:"saint",name:"聖使者",tier:"S",reroll:"S",role:"アタッカー（形態変化）",range:"遠隔",
+  recipe:["大剣ペンギン","演奏家","戦士","爆破兵"],
+  obtain:["ヒーロー募集（低確率）","未入手なら氷晶3000個で交換"],
+  lv6:"聖槍で対象を3秒スタン",lv12:"神格化の確率+10%",
+  skills:[["星光抱擁","味方全体の攻撃速度+10%（形態1・2共通）"],["神格化","25%の確率で別の化身に変化。失敗するとユニットが消える"],["聖槍","8%の確率で攻撃力500%の物理ダメージ"],["消えゆく雪","8%の確率で2.5秒間、0.5秒ごとに攻撃力300%の物理ダメージ＋移動速度-20%"],["裁決（形態2）","HP3%以下の敵を直接倒す"],["神聖砲撃（形態2）","攻撃時、ランダムな5体に攻撃力200%の神聖ダメージ"],["天啓（形態2）","20秒間続く宝珠を召喚し、0.2秒ごとに攻撃力500%の神聖ダメージ"]],
+  place:"神格化後は中段の左寄り〜中央。範囲が広いので端から1〜2マス離してもよい。",
+  pros:["神格化に成功すればトップクラスの火力","比較的合成しやすく、メインステージ3章あたりまで主力になれる"],
+  cons:["神格化の成功率が1/4と低く、失敗すると消滅して安定しない"],
+  memo:"2025/8/14にスキン「炎の仲裁者」がイベントで登場。"},
+ {id:"dragon",name:"炎の魔竜",tier:"S",reroll:"B",role:"サポート／伸ばし役",range:"遠隔",
+  recipe:["白梟投手","白梟投手","元素霊"],
+  obtain:["ヒーロー募集（低確率）","未入手なら氷晶3000個で交換（優先度：中）"],
+  lv6:"孵化率+2.5%",lv12:"最強生物の攻撃力+5%",
+  skills:[["竜の血","味方全体の攻撃力+10%（卵の状態でも有効）"],["孵化（卵）","10秒ごとに揺れ、2.5%の確率で孵化"],["最強生物","盤面にいる味方の種族が1種類異なるごとに自身の攻撃力+10%（敵の種族ではない）"],["炎爆","8%の確率で巨大火球、範囲に攻撃力1500%の炎ダメージ"],["煉獄の息（究極）","範囲に攻撃力3000%の炎ダメージ＋3秒間の炎の地面（0.5秒ごとに3000%）"]],
+  place:"中段か下段。範囲が広く上下の通路に届く。ブラストネコや終結者がいるなら左側で支援役に。",
+  pros:["攻撃力バフは2人モードで相方のヒーローにも乗る","種族をばらけさせた編成でどんどん伸びる"],
+  cons:["孵化が運次第。孵化しないままバトルが終わることもある","早く合成しすぎると一時的に盤面が弱くなる"],
+  memo:"不朽ヒーロー「イグニス」の素材。カラースキンあり（掲示板で解放方法の質問あり・未解決）。"},
+ {id:"hotaru",name:"ホタル",tier:"A",reroll:"―",role:"アタッカー（融合型）",range:"近接",
+  recipe:["白梟投手","演奏家","シスター"],
+  obtain:["イベント限定（募集・氷晶交換は不可）","アカウント作成から一定日数後にイベントで入手用アイテムが出現"],
+  lv6:"スキル「災厄爆発」解放",lv12:"朽壊霊の攻撃力上昇効果+100%",
+  skills:[["ファントム","融合回数3回で攻撃速度+30%、6回で攻撃力+30%、9回でスキル範囲+30%"],["朽壊霊","召喚時に確率でランクが決まり、最低ランクのホタルと融合できる。攻撃力+5%（上限50%）。対象のHPが2%減るごとに与ダメージ+1%"],["腐敗の種","10%の確率で範囲に腐敗の種。0.5秒ごとに300%の自然ダメージ"],["災厄爆発（Lv6）","10%の確率で範囲に2500%の自然ダメージ"],["狂気の鞭打ち（形態2以降）","範囲に2000%の自然ダメージを6回"]],
+  place:"上段の攻撃の中心。スタンを持たないのでスタン役の横に置く。",
+  pros:["9回融合時の性能はワニキングを上回るとされる"],
+  cons:["量産にコイン式機械や所蔵品が必要で上級者向け","イベント枠はブラストネコなどが優先されがち"],
+  memo:"融合の吸収回数：融合先が形態1なら+1、形態2なら+2、形態3なら+3。対象は選べない。融合なしの強さの目安は「ワニキング≧剣霊≧ホタル≧緋色の鎌」。総合表はA、個別ページはS評価。"},
+ {id:"term",name:"終結者",tier:"A",reroll:"B",role:"アタッカー（形態変化）",range:"遠隔",
+  recipe:["破壊装置","ハンター","ハンター"],
+  obtain:["ヒーロー募集（低確率）","未入手なら氷晶3000個で交換（優先度：低）","初心者試練7日目のミッション報酬（2025年7月時点）"],
+  lv6:"スーパーアーマー解放に必要な幸運コイン-5（15→10枚）",lv12:"スキルダメージ+50%",
+  skills:[["スーパーアーマー（形態1）","幸運コイン15枚で第2形態に変化"],["レーザーパルス（形態1）","20%の確率で範囲に攻撃力800%の物理ダメージ"],["エネブースター（形態2）","味方全体の魔力回復速度+10%"],["貫通レーザー（形態2）","範囲に攻撃力500%の稲妻ダメージ"],["フルバレット（形態2）","8%の確率で範囲に1500%の稲妻ダメージ"],["レーザーパルス（形態2）","2秒間レーザー、0.2秒ごとに攻撃力400%の稲妻ダメージ"]],
+  place:"中段の横一列。近接がいない場合は上段でも機能。",
+  pros:["第2形態は広範囲・高火力の砲台","第2形態で味方の魔力回復も支援"],
+  cons:["幸運コインを大量に使うため、コイン式機械がいないと活かしにくい"],
+  memo:"コイン式機械と組むのが前提。"},
+ {id:"winter",name:"厳冬の心",tier:"A",reroll:"SS",role:"デバフ／範囲アタッカー",range:"遠隔",
+  recipe:["嵐の魔術師","シスター","元素霊"],
+  obtain:["メインステージ1-8クリア報酬（おすすめ）","ヒーロー募集（低確率）","未入手なら氷晶3000個で交換"],
+  lv6:"スキル「消えゆく雪」解放",lv12:"飛び散る氷晶・消えゆく雪の発動確率+2%",
+  skills:[["氷結領域","全ての敵の移動速度-4%"],["増える寒さ","元素霊を消費して強化。厳冬の呪いの氷河数+2、ダメージ+攻撃力100%分"],["飛び散る氷晶","8%の確率で氷柱を生成。範囲に氷霜ダメージ＋移動速度-20%（1秒）"],["消えゆく雪（Lv6）","8%の確率で範囲に攻撃力2000%の氷霜ダメージ＋3秒スタン"],["厳冬の呪い（究極）","氷柱10本で攻撃力500%の氷霜ダメージ。氷霜衰弱を2%ずつ最大40%付与（5秒）"]],
+  place:"中央より右の中段・下段。上部通路の敵をスタンさせて総攻撃。",
+  pros:["ステージ報酬で確定入手でき、貴重なアイテムを使わない","合成が剣霊やワニキングより楽で初心者向け"],
+  cons:["スタン役の代わりが多い","同じ素材を使うブラストネコが攻撃面で優先されがち"],
+  memo:"総合A／リセマラSSと評価が分かれる典型。序盤の主力候補。Gamerchのメニュー表記は「厳冬の冬」。"},
+ {id:"genbu",name:"玄武",tier:"A",reroll:"A",role:"スタン役",range:"遠隔",
+  recipe:null,
+  obtain:["ヒーロー募集（低確率）","未入手なら氷晶3000個で交換（優先度：中）","過去に新サーバー御礼イベントのログボで配布"],
+  lv6:"スキル発動率+3%",lv12:"スタン持続時間+1秒",
+  skills:[["地揺れ","範囲内の敵に攻撃力100%の物理ダメージ"],["天地崩壊","13%の確率で範囲に攻撃力1200%の物理ダメージ＋3秒スタン"],["巨大な裂け目","3秒間の大型バリア。0.5秒ごとに攻撃力1000%のダメージ＋移動速度-20%"]],
+  place:"中段・下段の右寄り。上側の通路をスタンで止める。",
+  pros:["素材の割にスタン性能と攻撃力が高い","合成素材が他のヒーローと被りにくい","共同作戦エクストラのスタン役候補"],
+  cons:["耐久役ではない"],
+  memo:"パルス装置との違いは遠距離からスタンを狙える点。"},
+ {id:"voodoo",name:"ブードゥー祭祀",tier:"B",reroll:"A",role:"アタッカー（毒）",range:"遠隔",
+  recipe:["銃士","パルス装置","鬼武者"],
+  obtain:["共同作戦ノーマル20階クリア報酬（おすすめ）","ヒーロー募集（低確率）","未入手なら氷晶3000個で交換（優先度：低）"],
+  lv6:"スキル「猛毒拡散」解放",lv12:"猛毒に感染した対象の被ダメージ+20%",
+  skills:[["侵食","全ての敵の防御力-20"],["呪い","8%の確率で範囲に攻撃力2000%の炎ダメージ＋2秒スタン"],["猛毒拡散（Lv6）","10秒間の毒霧。0.5秒ごとに攻撃力700%のトゥルーダメージ（合計14000%）"]],
+  place:"中段・下段の右寄り中央。",
+  pros:["共同作戦で無料入手でき、合成難易度も低い","序盤から頼れるアタッカー"],
+  cons:["Lv6まで真価を発揮しない","火力面ではワニキングなどより優先度が下がる"],
+  memo:""},
+ {id:"scythe",name:"緋色の鎌",tier:"B",reroll:"S",role:"アタッカー（スタック型）",range:"近接",
+  recipe:["銃士","白梟投手","ハンター"],
+  obtain:["メインステージ1-4クリアで入手可能（Gamerchリセマラページより）","ヒーロー募集（低確率）","未入手なら氷晶3000個で交換"],
+  lv6:"スキル「茨の檻」解放",lv12:"防御力低下効果+50%",
+  skills:[["凋落の染み","全ての敵の防御力-20"],["魂心奪取","敵を倒すたびに攻撃力が上昇（上限あり）"],["貫心","8%の確率で攻撃力4000%の物理ダメージ"],["茨の檻（Lv6）","範囲内の敵に攻撃力4000%の物理ダメージ"]],
+  place:"上部の左寄り（左角付近）で斥候役。",
+  pros:["入手・合成しやすく序盤から即戦力","雑魚が多いステージほど攻撃力が伸びる"],
+  cons:["伝説素材が揃うと他のアタッカーに置き換わりやすい"],
+  memo:"伝説素材が揃わない時のつなぎとして優秀。"},
+ {id:"necro",name:"死霊術の魔女",tier:"B",reroll:"A",role:"サポート（銀貨・デバフ）",range:"遠隔",
+  recipe:["銃士","演奏家","パルス装置"],
+  obtain:["ヒーロー募集（低確率）","未入手なら氷晶3000個で交換"],
+  lv6:"スキル「亡霊憑依」解放",lv12:"凶悪な呪い・亡霊憑依の追加効果+50%",
+  skills:[["威嚇","全ての敵の防御力-20"],["凶悪な呪い","敵に呪い。攻撃力1200%の炎ダメージ＋銀貨50枚獲得"],["亡霊憑依（Lv6）","8%の確率で範囲に攻撃力1299%の炎ダメージ＋5秒間防御力-50"]],
+  place:"攻撃役の後方。中段・下段の中央。攻撃型神話がいるならそちらを中段に、魔女は下段に。",
+  pros:["銀貨の調達と防御デバフを両立"],
+  cons:["銀貨はハンターLv6でも稼げ、デバフより火力で押す方が強いので出番は少なめ"],
+  memo:""},
+ {id:"griffin",name:"グリフィン",tier:"C",reroll:"A",role:"スタン役",range:"遠隔",
+  recipe:null,
+  obtain:["ヒーロー募集（低確率）","未入手なら氷晶3000個で交換（優先度：中）","過去に初心者キャンペーン（160円）で販売"],
+  lv6:"スキル発動率+3%（究極スキル解放）",lv12:"スタン持続時間+1秒",
+  skills:[["沈滞","全ての敵の移動速度-3%"],["遅延","8%の確率で1秒間電光、0.1秒ごとに攻撃力400%の雷ダメージ。終了後、範囲の敵を3秒スタン"],["破滅の光（究極・Lv6〜）","範囲内の敵に攻撃力3000%の雷ダメージ"]],
+  place:"中段・下段の右寄り。上側の通路の敵をスタン。",
+  pros:["スタンと攻撃力を両立し、合成も比較的簡単"],
+  cons:["本領はLv6以降"],
+  memo:"総合表ではC、個別ページではA評価と食い違いあり。"},
+ {id:"shadow",name:"暗影ハンター",tier:"C",reroll:"―",role:"アタッカー",range:"遠隔",
+  recipe:["大剣ペンギン","十字軍","鬼武者"],
+  obtain:["ヒーロー募集（低確率）","未入手なら氷晶3000個で交換（優先度：低）"],
+  lv6:"スキル「漆黒の夜」解放（4秒スタン）",lv12:"ファントム回旋がリセットされ再ダメージ",
+  skills:[["ファントム回旋","10%の確率で前方にブーメラン。直線上の敵に攻撃力2000%の物理ダメージ"],["漆黒の夜（Lv6）","10%の確率で矢を放ち攻撃力1000%の物理ダメージ＋4秒スタン"]],
+  place:"Lv6以上は中段の左寄りで上部通路をスタン。Lv6未満は左側。",
+  pros:["合成コストが安い（紫1体＋青2体）","範囲が広く、Lv6から早めのスタン源になる"],
+  cons:["基礎攻撃力が低く、2章あたりから火力不足","神話エキスが貴重なので優先して育てるほどではない"],
+  memo:""}
+];
+const IMMORTAL = [
+ ["アレス","ワニキング＋剣霊"],["かぐや姫","ロン＋妖精シンガー"],["イグニス","炎の魔竜＋ブラストネコ"]
+];
+const byName = Object.fromEntries(HEROES.map(h=>[h.name,h]));
+const TIER_ORDER = ["SS","S","A","B","C"];
+const badge = t => `<span class="tier-badge t-${t==="―"?"none":t}">${t}</span>`;
+const hlink = n => byName[n] ? `<a href="#hero-${byName[n].id}">${n}</a>` : n;
+const tbl = (head, rows, cls="") => `<div class="tbl ${cls}"><table><thead><tr>${head.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+const ul = items => `<ul class="list">${items.map(i=>`<li>${i}</li>`).join("")}</ul>`;
+const ol = items => `<ol class="list">${items.map(i=>`<li>${i}</li>`).join("")}</ol>`;
+const recipeHTML = r => r ? `<div class="recipe">${r.map(m=>`<span class="mat">${m}</span>`).join('<span class="plus">＋</span>')}</div>` : `<div class="warn"><b>要確認：</b>攻略サイト上の記載が「パルス装置＋ファンネル＋爆破兵＋爆破兵」となっていますが、結果が別ヒーロー表記になっており誤記の可能性があります。ゲーム内のヒーロー詳細で確認してください。</div>`;
+const tierColor = t => getComputedStyle(document.documentElement).getPropertyValue({SS:"--ss",S:"--s",A:"--a",B:"--b",C:"--c"}[t]||"--c");
+
+/* ---------- メニュー ---------- */
+const MENU = [
+ ["トップ",[["top","トップページ"],["news","最新情報・アップデート"]]],
+ ["初心者向け",[["beginner","初心者ガイド（ゲームの基本）"],["start","序盤の進め方"],["reroll","リセマラ当たりランキング"],["unlock","コンテンツ解放条件"],["server","サーバー変更・移動"]]],
+ ["ランキング",[["tier","最強ヒーローランキング"],["pettier","仲間（ペット）ランキング"]]],
+ ["ヒーロー",[["heroes","神話ヒーロー一覧"],["recipe","合成レシピ・素材逆引き"],["immortal","不朽ヒーロー"],["party","おすすめ編成・配置"]]],
+ ["育成・システム",[["growth","育成まとめ（領主・ヒーロー）"],["pets","仲間（ペット）"],["relics","所蔵品一覧"],["weapon","専用武器・乗り物・スキン"],["items","通貨・アイテム一覧"],["gacha","ガチャ（募集）"]]],
+ ["コンテンツ",[["modes","バトルの基本ルール"],["coop","共同作戦"],["br","バトルロワイヤル"],["other","その他のコンテンツ"]]],
+ ["お役立ち",[["codes","ギフトコード・招待コード"],["faq","よくある質問（Q&A）"],["tips","小ネタ・豆知識"],["glossary","用語集"],["sources","参考・出典"]]]
+];
+
+function renderSide(){
+  const heroSub = HEROES.map(h=>`<li class="sub"><a href="#hero-${h.id}" data-go="hero-${h.id}">${h.name}</a></li>`).join("");
+  document.getElementById("side").innerHTML = MENU.map(([g,items])=>`<h4>${g}</h4><ul>${items.map(([id,t])=>`<li><a href="#${id}" data-go="${id}">${t}</a></li>`).join("")}${g==="ヒーロー"?heroSub:""}</ul>`).join("");
+}
+
+/* ---------- ページ本文 ---------- */
+const P = {};
+P.top = {title:"ペタペタペンギン団 攻略wiki", body:()=>`
+<p>『ペタペタペンギン団』（通称：ペタペン）の攻略情報を、各攻略サイト・質問掲示板・公式発表から集めて1か所にまとめた非公式wikiです。サイトによって食い違う情報は、どちらの情報かを明記しています。</p>
+<h2>最新情報</h2>
+<ul class="news">
+ <li><time>2026/09/23</time><span>Ver.1.1.6：新システム「乗り物」、バトロワS10、栄誉チャレンジS5 開始。<a href="#news">詳細</a></span></li>
+ <li><time>2025/12/03</time><span>新しい仲間「幻夢象」追加。<a href="#pets">仲間ページ</a></span></li>
+ <li><time>2025/08/14</time><span>専用武器システム、ギルド連合作戦、新スキン実装。<a href="#news">詳細</a></span></li>
+ <li><time>2025/04/28</time><span>正式リリース。無料3000連ガチャキャンペーン。</span></li>
+</ul>
+<h2>まず読みたいページ</h2>
+<div class="cards">
+ <a class="card" href="#beginner"><b>初心者ガイド</b><span>召喚・合成・幸運コインの仕組み</span></a>
+ <a class="card" href="#start"><b>序盤の進め方</b><span>九死一生任務から始める定石</span></a>
+ <a class="card" href="#tier"><b>最強ランキング</b><span>神話ヒーローのティア表</span></a>
+ <a class="card" href="#recipe"><b>合成レシピ</b><span>素材から作れる神話を逆引き</span></a>
+ <a class="card" href="#codes"><b>ギフトコード</b><span>コード一覧と入力場所</span></a>
+ <a class="card" href="#faq"><b>よくある質問</b><span>掲示板で多い疑問への回答</span></a>
+</div>
+<h2>神話ヒーロー評価（早見表）</h2>
+${tierTable(false)}
+<p class="src">基準：Gamerch「神話ヒーロー総合評価ランキング」（2026年9月23日更新分）。詳しくは<a href="#tier">最強ランキング</a>へ。</p>
+<h2>ゲーム基本情報</h2>
+${tbl(["項目","内容"],[
+ ["タイトル","ペタペタペンギン団（ペタペン）"],
+ ["ジャンル","ローグライク×合成タワーディフェンスRPG"],
+ ["配信元","MOREFUN (H.K.) LIMITED"],
+ ["リリース日","2025年4月28日（iOS / Android）"],
+ ["価格","基本無料（アイテム課金：160円〜15,800円）"],
+ ["対応OS","iOS / iPadOS 15.0以降、Android"],
+ ["容量・年齢区分","約1.9GB（iOS）／ 9+"],
+ ["公式サイト",'<a href="https://jp-penguin.morefungaming.com/" target="_blank" rel="noopener">jp-penguin.morefungaming.com</a>'],
+ ["公式X",'<a href="https://x.com/PGFightJP" target="_blank" rel="noopener">@PGFightJP</a>（ギフトコードはここで告知）'],
+ ["ストア",'<a href="https://apps.apple.com/jp/app/id6742937695" target="_blank" rel="noopener">App Store</a> ／ <a href="https://play.google.com/store/apps/details?id=com.pgfight.an.jp" target="_blank" rel="noopener">Google Play</a>']
+])}
+<h2>どんなゲーム？</h2>
+<p>太陽が消えて氷河期を迎えた氷原の地「ビスランド」が舞台。千年封印されていたゾンビ（作中では「感染者」）が復活し、ペンギンの女神が地球から召喚した「領主」（プレイヤー）が、氷に封じられたヒーローたちの封印を解いて迎え撃ちます。</p>
+${ul(["銀貨を払って「召喚」をタップするとヒーローが盤面に出現。同じヒーロー3体で1段階上のレアリティに合成","決まった素材3〜4体のレシピ合成で最高レアの<b>神話ヒーロー</b>を作るのが目標","召喚やバトル中の強化はランダム（ローグライク要素）で、毎回展開が変わる","仲間と協力してボスを倒す<b>共同作戦</b>、8人（2人×4チーム）で戦う<b>バトルロワイヤル</b>あり"])}
+`};
+
+P.news = {title:"最新情報・アップデート履歴", body:()=>`
+<p>公式のお知らせ・App Storeの更新情報・攻略サイトのアップデートまとめを時系列に整理しています。新しい順です。</p>
+<h2>Ver.1.1.6（2026年9月23日）</h2>
+${ul(["新システム<b>「乗り物」</b>追加。第一弾はレア品質の「魔法の絨毯」（バトロワショップで交換）","伝説級の乗り物「反重力浮遊ドライバー」が近日登場予定","バトルロワイヤル <b>S10「晴れた海島の光」</b> 開幕","栄誉チャレンジ シーズン5 開始。「深淵挑戦」も近日開始予定","新規向け「初心者特典」、漁場（流光漁場・星月漁場）、ギルド内のアイテム相互援助システムを追加・予告","新ヒーローの追加はなし"])}
+<h2>2026年5月頃：ホラー祭り</h2>
+${ul(["期間限定のホラーイベント。「蛍幕凶霊」「口裂け女」「八尺様」などのヒーローが召喚可能に（報道ベース）","この時期、招待コード入力の雪だるまアイコンがイベント仕様に変わっていたという報告あり"])}
+<h2>2025年12月3日</h2>
+${ul(["新しい仲間（ペット）「幻夢象」追加"])}
+<h2>2025年8月14日</h2>
+${ul(["バトルロワイヤル Season3 開幕（8月15日12:00〜）","<b>専用武器システム</b>実装。強化素材も解放。基礎育成箱の中身が変更","<b>ギルドパス・ギルド連合作戦</b>が正式実装","新スキン：ワニキング「光コア・零式」（カラーパールで入手）、聖使者「炎の仲裁者」（イベント入手）","剣霊のボイスが変更","神話募集（募集ポイント2000で実行）の演出動画がスキップ可能に"])}
+<h2>2025年7月</h2>
+${ul(["初心者試練7日目のミッションで「終結者」が入手可能（7月時点の情報）"])}
+<h2>2025年4月28日：正式リリース</h2>
+${ul(["事前登録100万人達成。合計3000回分の召喚ができる「封印解除の鍵」を配布（無料3000連）","日本限定スキン「剣魂（ケンタマ）」配布","事前登録段階報酬：封印解除の鍵福袋×20、金貨、激レアヒーロー宝箱×10、アイスピック、氷晶×200、伝説のヒーロー宝箱×10、所蔵品「厳冬の悲しみ」など"])}
+<div class="note"><b>補足：</b>一部の記事に「2025年3月25日配信」とする記載がありますが、ストア・公式・GameWithはいずれも4月28日です。</div>
+`};
+
+P.beginner = {title:"初心者ガイド（ゲームの基本）", body:()=>`
+<div class="toc"><b>目次</b><ol><li><a href="#beginner" data-jump="b1">バトルの流れ</a></li><li><a href="#beginner" data-jump="b2">合成とレアリティ</a></li><li><a href="#beginner" data-jump="b3">バトル内の資源</a></li><li><a href="#beginner" data-jump="b4">配置の基本</a></li><li><a href="#beginner" data-jump="b5">アカウントの育成</a></li></ol></div>
+<h2 id="b1">バトルの流れ</h2>
+${ol(["銀貨を消費して「召喚」をタップ → 盤面の空きマスにランダムなヒーローが自動配置される","ヒーローは通路を進む敵（感染者）を自動で攻撃。ウェーブごとに敵が増え、一定ウェーブでボスが登場","盤面の敵の数が上限（例：60体や100体）に達するとゲームオーバー。ボス戦は時間切れでも負けやすい","ヒーローはバトル中いつでもドラッグで位置を交換できる"])}
+<h2 id="b2">合成とレアリティ</h2>
+<p>レアリティは <b>通常 → レア → 激レア → 伝説 → 神話</b> の5段階。神話の上に<a href="#immortal">不朽ヒーロー</a>がいます。</p>
+${tbl(["種類","やり方","ポイント"],[
+ ["通常合成","同じマスに同じヒーローが3体揃うと、1段階上のレアリティのヒーローになる","1マスに最大3体まで召喚可能。盤面の数を圧縮できる"],
+ ["神話合成（レシピ）","指定された素材ヒーロー3〜4体を揃えて合成","狙う神話の素材は通常合成に使わずに残す。<a href=\"#recipe\">レシピ一覧</a>"],
+ ["祈願","幸運コインでヒーローを呼ぶ","高レアほど成功率が低い。コイン式機械・妖精シンガー狙いが定番"]
+])}
+<div class="note"><b>Tip：</b>神話ヒーローにお気に入りマークを付けると、合成先として優先的に表示されます。</div>
+<h2 id="b3">バトル内の資源</h2>
+${tbl(["資源","入手","主な使い道"],[
+ ["銀貨","敵の撃破、ハンター（Lv6〜のスキル）、所蔵品「金庫」","ヒーロー召喚、レアリティ単位の強化"],
+ ["幸運コイン","九死一生任務（200枚）、コイン式機械、ボス撃破など","領主強化、祈願、剣霊・終結者の強化"],
+ ["魔力","ヒーローの攻撃で自然回復。妖精シンガー・終結者が回復を加速","究極スキルの発動"]
+])}
+<p>銀貨の強化は<b>ヒーロー個別ではなくレアリティ単位</b>。序盤は「精鋭・通常ヒーロー強化」、後半は「激レアヒーロー強化」を使い分けます。「召喚確率強化」で高レアが出やすくなります。</p>
+<h2 id="b4">配置の基本</h2>
+${ul(["近接ヒーローは敵が通る<b>外側</b>、遠隔ヒーローは<b>内側・後方</b>に置く","スタン役（厳冬の心、玄武など）を右寄りに置いて上部通路で敵を止め、アタッカーで総攻撃","コイン式機械は敵の出現地点の近く（アタッカーより前）","前衛・中衛・後衛の隊列ではなく、<b>火力／コイン・魔力／足止め</b>の役割で考える"])}
+<p>くわしくは<a href="#party">おすすめ編成・配置</a>へ。</p>
+<h2 id="b5">アカウントの育成</h2>
+${ul(["<b>領主</b>：メインステージクリアや「旅行」（放置報酬）でレベルアップ。序盤は領主強化が全体の底上げになる","<b>ヒーロー</b>：神話ヒーローは凸（重ね）不要。お金と神話エキスでレベルを上げる","<b>仲間（ペット）</b>：領主のそばで戦うサポート役。専用ピースで解放","<b>所蔵品</b>：バトル全体にかかるパッシブ効果。金庫・黄金の鎚が最上位","<b>専用武器</b>：ヒーローLv16以降に必要"])}
+<p>詳細は<a href="#growth">育成まとめ</a>へ。</p>
+`};
+
+P.start = {title:"序盤の進め方", body:()=>`
+<p>多くの攻略サイトで共通している「序盤の定石」をまとめました。<b>バトル中の立ち回り</b>と<b>アカウント全体の進め方</b>に分けています。</p>
+<h2>バトル中の立ち回り（優先度順）</h2>
+<h3>① 九死一生任務を最初に達成する（最優先）</h3>
+<p>盤面の敵の数が一度でも規定数を超えれば達成になり、<b>幸運コイン200枚</b>がもらえます。デメリットはありません。</p>
+${tbl(["敵の上限数","達成ライン"],[["60体","50体以上"],["100体","80体以上"]])}
+<p>そのため、達成するまではヒーローや領主を出さずにあえて敵を溜めるのが定番です。</p>
+<h3>② 銀貨を確保する</h3>
+${ul(["<b>ハンター</b>をLv6以上にすると、スキルで銀貨を回収できる。敵の出現地点の近くに置く","所蔵品<b>「金庫」</b>を持っていれば自動で銀貨が増える","ハンターをLv6程度まで育ててから金庫を配置すると回収効率が上がる"])}
+<h3>③ ダンジョンに対応する</h3>
+<p>開始と同時に発生するダンジョンはクリアしないとゲームオーバー、バトルロワイヤルでは大きく減点されます。序盤から銀貨を稼げるハンターや領主を入れて少しずつ削りましょう。</p>
+<h3>④ 幸運コインの使い道を決める</h3>
+${tbl(["使い道","効果","向いている場面"],[["領主強化","能力が確実に上がる。銀貨を使わずに15ウェーブまで安定しやすい","安定重視・初心者"],["祈願","激レアヒーローを狙う。コイン式機械や妖精シンガーを作るため","コインを回す編成を作りたいとき"]])}
+<h3>推奨の流れ（まとめ）</h3>
+${ol(["ダンジョンがあれば、敵が出る前に領主を召喚して入れる（なければ出さない）","九死一生任務を達成するまでヒーロー・領主を出さずに待つ","達成したら銀貨でヒーローを上限まで召喚","安定したら銀貨は貯める。ハンターは敵の出現地点の近くへ","幸運コインで領主強化 or 祈願をして、15〜20ウェーブの耐久に備える","コイン式機械を合成してコインを稼ぎつつ、神話アタッカーを合成していく"])}
+<div class="note"><b>合成は急ぎすぎない：</b>盤面のヒーロー上限は20体。上限に近づくまでは合成を控えめにして、盤面の数を揃えながら進めると神話の素材を残しやすくなります。</div>
+
+<h2>アカウント全体の進め方</h2>
+${ol(["チュートリアルを進め、ステージ1-2クリアでガチャ（募集）を解放","メール・任務・公式SNS連携の報酬を受け取り、<a href=\"#codes\">ギフトコード</a>を入力","<b>メインステージ1-4で緋色の鎌、1-8で厳冬の心</b>が手に入るので、まずはここまで進める","主力の神話を<b>1〜2体に絞って</b>集中育成。全部を同時に育てると素材が分散する","最初の目標は<b>ワニキングLv12</b>（ブラストフィスト解放）","共同作戦ノーマル20階をクリアして<b>ブードゥー祭祀</b>を入手","デイリー任務・イベント・ギルド・共同作戦を毎日回して素材を貯める","月パス（2倍速→3倍速、動画スキップ）があると周回がかなり楽になる"])}
+<h2>序盤の注意点</h2>
+${ul(["募集は序盤は通常募集で幅広く集める（10倍募集は便利だが素材の幅を優先）","神話の素材ヒーローは使い切らない","ハードは敵の火力と物量が急増する。ノーマルと同じ編成のままだと詰まりやすい","聖使者は神格化失敗で消えるので、序盤の安定性を求めるなら厳冬の心・緋色の鎌が無難"])}
+`};
+
+P.reroll = {title:"リセマラ当たりランキング", body:()=>`
+<div class="note"><b>結論：</b>リセマラは<b>必須ではありません</b>。神話ヒーローは未入手なら氷晶3000個で好きなものと交換でき、厳冬の心はステージ報酬で確定入手、最強格のブラストネコはガチャから出ないためです。</div>
+<h2>リセマラ当たりランキング</h2>
+${tbl(["評価","ヒーロー","備考"],[
+ [badge("SS"),hlink("ワニキング"),"総合でもSS。最優先"],
+ [badge("SS"),hlink("剣霊"),"バフ＋割合ダメージ"],
+ [badge("SS"),hlink("厳冬の心"),"1-8クリアで入手可能"],
+ [badge("S"),hlink("聖使者"),"神格化が成功すれば強力"],
+ [badge("S"),hlink("緋色の鎌"),"1-4クリアで入手可能"],
+ [badge("A"),hlink("妖精シンガー")+"、"+hlink("死霊術の魔女")+"、"+hlink("玄武")+"、"+hlink("グリフィン")+"、"+hlink("ブードゥー祭祀"),"ブードゥー祭祀は共同作戦ノーマルで入手可能"],
+ [badge("B"),hlink("終結者")+"、"+hlink("炎の魔竜")+"、"+hlink("コイン式機械"),"終結者は初心者任務で入手可能"]
+],"tier")}
+<p class="src">出典：Gamerch リセマラ当たりランキング。リセマラ評価は「序盤の使いやすさ」重視のため、<a href="#tier">総合評価</a>とは順位が異なります（コイン式機械はリセマラB／総合SS）。</p>
+<h2>リセマラの手順</h2>
+${ol(["チュートリアルを進め、ステージ1-2までクリアしてガチャを解放","メール・任務の報酬を受け取る","SNSボタンから公式アカウントと連携し、ガチャ用アイテムを受け取る","ヒーロー募集を回して結果を確認","やり直す場合は<a href=\"#server\">サーバー変更</a>で新しいサーバーから再スタート"])}
+${tbl(["項目","内容"],[["1周の目安","約15分"],["神話の排出率","2.0%"],["主な排出","キャラクターの欠片が中心"]])}
+`};
+
+P.unlock = {title:"コンテンツ解放条件", body:()=>`
+<p>多くの機能は<b>領主レベル</b>と<b>サーバー開設からの経過日数</b>の両方を満たすと解放されます。レベルが足りていても、新しいサーバーでは日数不足で解放されないことがあります。</p>
+${tbl(["コンテンツ","解放条件（目安）"],[
+ ["ヒーロー募集（ガチャ）","メインステージ1-2クリア"],
+ ["招待コード入力（雪だるまアイコン）","レベル3"],
+ ["自分の招待コード確認","ランク10"],
+ ["特殊武器（専用武器）","領主Lv15以上＋サーバー開始から約12〜14日"],
+ ["ペット（仲間）機能","領主Lv16以上＋サーバー開始から約12日"],
+ ["各種イベント","アカウント作成から約2週間後"],
+ ["ブラストネコ・ホタルの入手アイテム","アカウント作成から一定日数後のイベント"]
+])}
+<h2>領主レベルの上げ方</h2>
+${ul(["メインステージのクリア","放置で経験値と報酬が貯まる「旅行」","月パスがあれば旅行の高速化"])}
+<div class="note"><b>ランク上限：</b>2025年8月時点でランクは30が上限。スタミナを全て消費しても到達まで約3〜4週間が目安です。</div>
+`};
+
+P.server = {title:"サーバー変更・移動", body:()=>`
+<h2>手順</h2>
+${ol(["ホーム画面左上のプレイヤーアイコンをタップ","メニューから「サーバー選択」を選ぶ","移動できるサーバー一覧（開設日数や活発さが表示される場合あり）から選んでログイン"])}
+<h2>仕様と注意点</h2>
+${ul(["変更前にメールと任務の報酬を受け取っておく","新しいサーバーは新規が多く、古いサーバーはベテランが多い傾向。ランキングの取りやすさが変わる","移動先ではサーバー経過日数が開設時点から数えられるため、コンテンツの解放時期が変わる","大きなイベント中の移動は避けるのが無難","フレンドと同じサーバーで遊びたい場合は事前に連絡を","共同作戦と精鋭任務はサーバーをまたいでマッチングするので、サーバーが違っても協力プレイは可能"])}
+<div class="warn"><b>情報の食い違い：</b>攻略サイトでは「育成状況を引き継いで複数回移動できる」と書かれている一方、App Storeのレビューには「サーバー間の移動ができない」という不満も見られます。「新しいサーバーで最初からやり直す（リセマラ用途）」ことと「育成データを持ったまま移動する」ことは別の可能性があるため、移動前にゲーム内の説明を必ず確認してください。</div>
+`};
+
+function tierTable(withRole=true){
+  const rows = TIER_ORDER.map(t=>{
+    const hs = HEROES.filter(h=>h.tier===t);
+    const atk = hs.filter(h=>!h.role.startsWith("サポート")).map(h=>hlink(h.name)).join("、")||"―";
+    const sup = hs.filter(h=>h.role.startsWith("サポート")).map(h=>hlink(h.name)).join("、")||"―";
+    return [badge(t),atk,sup];
+  });
+  return tbl(["評価","アタッカー・スタン役","サポート"],rows,"tier");
+}
+
+P.tier = {title:"最強ヒーローランキング（神話ヒーロー）", body:()=>`
+<div class="note"><b>現環境のトップ：</b>アタッカーは<b>ワニキング</b>と<b>ブラストネコ</b>、サポートは<b>コイン式機械＋妖精シンガー</b>のセット。</div>
+<h2>総合評価ティア表</h2>
+${tierTable()}
+<h3>評価基準</h3>
+${tbl(["評価","意味"],[[badge("SS"),"現環境の最前線で活躍する"],[badge("S"),"メインではないが活躍する"],[badge("A"),"限定的な場面や裏方として支える"],[badge("B"),"活躍は薄いが強力な面もある"],[badge("C"),"能力が低め"]],"tier")}
+<p class="src">想定：ヒーローLv6または12、バトルロワイヤルと制限なしコンテンツでの運用。基準はGamerch「神話ヒーロー総合評価ランキング」2026年9月23日更新分（AppMatchの引用表で照合）。比較的新しいヒーロー（ロンなど）は未掲載。</p>
+<h2>全ヒーロー比較表</h2>
+${tbl(["ヒーロー","総合","リセマラ","役割","射程","主な入手"],HEROES.map(h=>[hlink(h.name),badge(h.tier),badge(h.reroll),h.role,h.range,h.obtain[0]]))}
+<h2>評価が分かれるヒーロー</h2>
+${tbl(["ヒーロー","食い違い","理由"],[
+ [hlink("厳冬の心"),"総合A／リセマラSS","序盤は確定入手で合成も楽。後半はスタン役の代わりが多く、同素材のブラストネコに枠を取られる"],
+ [hlink("コイン式機械"),"総合SS／リセマラB","アタッカーが揃ってから真価を発揮する"],
+ [hlink("ホタル"),"総合表A／個別ページS","9回融合で最強クラスだが、量産が難しい"],
+ [hlink("グリフィン"),"総合表C／個別ページA","スタンと火力を両立するが、他のスタン役が優先されがち"]
+])}
+<p>ティアは育成とガチャの優先度の目安です。最終的には<b>自分の編成に足りない役割かどうか</b>で判断しましょう。</p>
+`};
+
+P.pettier = {title:"仲間（ペット）ランキング", body:()=>`
+<div class="warn"><b>注意：</b>攻略サイトによっては「仲間ランキング」の名前でヒーロー（ワニキング等）を紹介している記事があります。ここでは本来の<b>仲間（ペット）</b>のみを扱います。</div>
+${tbl(["仲間","ランク","おすすめの人"],[
+ ["炎宝","レジェンド","共同作戦中心の人。所蔵品「黄金の鎚」が★3以上なら特に強い"],
+ ["銀星","レジェンド","バトロワ中心の人。黄金の鎚の育成が進んでいない人にも"],
+ ["熊二郎","―","領主の火力を大きく伸ばす。共同作戦・ボス戦のダメージ貢献が向上"],
+ ["幻夢象","―","2025年12月3日追加。評価情報は少なめ"]
+])}
+<p><b>結論：</b>共同作戦を重視するなら<b>炎宝</b>、バトロワを重視するなら<b>銀星</b>から育てるのがおすすめ。どちらも仲間集結ガチャで入手できます。</p>
+<p class="src">仲間の評価は2026年2月時点の攻略情報に基づきます。育成方法は<a href="#pets">仲間ページ</a>へ。</p>
+`};
+
+P.heroes = {title:"神話ヒーロー一覧", body:()=>`
+<p>現在攻略情報がまとまっている神話ヒーロー16体の一覧です。名前を押すと個別ページ（スキル・合成素材・配置）に移動します。</p>
+${tbl(["ヒーロー","評価","役割","合成素材","入手"],HEROES.map(h=>[hlink(h.name),badge(h.tier),h.role+"<br><span class=\"src\">"+h.range+"</span>",h.recipe?h.recipe.join("＋"):"要確認",h.obtain.map(o=>o.replace(/（.*?）/g,"")).join("／")]))}
+<h2>入手方法まとめ</h2>
+${tbl(["入手方法","ヒーロー"],[
+ ["イベント限定（募集・氷晶交換不可）",hlink("ブラストネコ")+"、"+hlink("ホタル")],
+ ["メインステージ報酬",hlink("緋色の鎌")+"（1-4）、"+hlink("厳冬の心")+"（1-8）"],
+ ["共同作戦ノーマル20階",hlink("ブードゥー祭祀")],
+ ["初心者試練7日目（2025年7月時点）",hlink("終結者")],
+ ["募集／未入手なら氷晶3000個で交換","上記以外の神話すべて（ヒーロー画面の「解放待ち」から）"]
+])}
+<h2>その他のヒーロー</h2>
+${ul(["<b>ロン</b>：比較的新しいヒーロー。不朽ヒーロー「かぐや姫」の素材。詳細な性能情報はまだ少ない","<b>蛍幕凶霊・口裂け女・八尺様</b>：ホラーイベントで召喚可能になったヒーロー","<b>雪娘・エンジェル・サキュバス</b>：公式紹介に登場するヒーロー","<b>剣魂（ケンタマ）</b>：事前登録で配布された日本限定スキン／キャラ"])}
+`};
+
+function heroPage(h){
+  const levels = [3,6,9,12,15].map(l=>[`Lv${l}`, l===6?h.lv6:l===12?h.lv12:COMMON_LV[l]]);
+  const uses = HEROES.filter(x=>x!==h && x.recipe && h.recipe && x.recipe.some(m=>h.recipe.includes(m)));
+  const imm = IMMORTAL.filter(([,c])=>c.includes(h.name));
+  return {title:h.name, crumb:'<a href="#heroes">神話ヒーロー一覧</a> ＞ '+h.name, body:()=>`
+<div class="hero-head"><div class="hero-mark" style="background:${tierColor(h.tier)}">${h.name[0]}</div>
+<div><div>${badge(h.tier)} <span class="tag">総合${h.tier}</span><span class="tag">リセマラ${h.reroll}</span><span class="tag hot">${h.role}</span><span class="tag">${h.range}</span></div>
+<p style="margin-top:6px">${h.pros[0]}。</p></div></div>
+<h2>合成素材（レシピ）</h2>
+${recipeHTML(h.recipe)}
+${uses.length?`<p class="src">素材が被る神話：${uses.map(u=>hlink(u.name)).join("、")}（同時に狙う場合は取り合いに注意）</p>`:""}
+<h2>入手方法</h2>${ul(h.obtain)}
+<h2>スキル</h2>
+${tbl(["スキル","効果"],h.skills.map(([n,d])=>[`<b>${n}</b>`,d]))}
+<h2>レベルアップ効果</h2>
+${tbl(["レベル","効果"],levels)}
+<p class="src">各レベルアップごとに会心ダメージ+1%。</p>
+<h2>評価・強い点と弱い点</h2>
+<h3>強い点</h3>${ul(h.pros)}
+<h3>弱い点</h3>${ul(h.cons)}
+<h2>おすすめ配置・使い方</h2><p>${h.place}</p>
+${h.memo?`<div class="note"><b>メモ：</b>${h.memo}</div>`:""}
+${imm.length?`<p>不朽ヒーロー：${imm.map(([n,c])=>`<a href="#immortal">${n}</a>（${c}）`).join("、")}</p>`:""}
+`};
+}
+HEROES.forEach(h=>{P["hero-"+h.id]=heroPage(h)});
+
+P.recipe = {title:"合成レシピ・素材逆引き", body:()=>{
+  const mats = {};
+  HEROES.forEach(h=>(h.recipe||[]).forEach(m=>{(mats[m]=mats[m]||new Set()).add(h.name)}));
+  const sorted = Object.entries(mats).sort((a,b)=>b[1].size-a[1].size);
+  return `
+<p>神話ヒーローは指定の素材ヒーローを揃えて合成します。<b>狙っている神話の素材は通常合成に使わずに残す</b>のが鉄則です。</p>
+<h2>神話レシピ一覧</h2>
+${tbl(["神話ヒーロー","評価","素材"],HEROES.map(h=>[hlink(h.name),badge(h.tier),h.recipe?h.recipe.join(" ＋ "):"<span class=\"src\">要確認</span>"]))}
+<h2>素材ヒーロー逆引き</h2>
+<p>素材ヒーローが出たときに「どの神話に使えるか」を調べる表です。使い道が多い素材ほど上にあります。</p>
+${tbl(["素材ヒーロー","使える神話","数"],sorted.map(([m,s])=>[`<b>${m}</b>`,[...s].map(hlink).join("、"),`<span class="num">${s.size}</span>`]))}
+<div class="note"><b>素材の取り合い：</b>大剣ペンギン（ワニキング・コイン式機械・聖使者・暗影ハンター）、銃士（剣霊・ブラストネコ・緋色の鎌・死霊術の魔女・ブードゥー祭祀）、演奏家（コイン式機械・聖使者・ホタル・死霊術の魔女）は多くの神話で使われます。どの神話を優先するか決めてから合成しましょう。</div>
+<h2>素材ヒーローの豆知識</h2>
+${ul(["<b>ハンター</b>：Lv6以上でスキルにより銀貨を回収できる。序盤の銀貨稼ぎの要","<b>大剣ペンギン</b>：タイトル画面でよく見る女の子","<b>パルス装置</b>：近距離のスタン役。玄武は遠距離からスタンできる点で使い分け","<b>元素霊</b>：厳冬の心のスキル「増える寒さ」で消費して強化にも使う"])}
+`}};
+
+P.immortal = {title:"不朽ヒーロー", body:()=>`
+<p>神話のさらに上のレアリティ。決まった神話ヒーロー2体を<b>Lv13まで</b>育てることなどで解放されます（他にも条件あり）。</p>
+${tbl(["不朽ヒーロー","必要な神話"],IMMORTAL.map(([n,c])=>[`<b>${n}</b>`,c.split("＋").map(hlink).join(" ＋ ")]))}
+${ul(["イベント交換所で「不朽（不屈）ヒーローのカケラ」が並ぶことがある（掲示板では1500個で交換という報告）","不朽ヒーローの詳しいスキル情報は、まだ攻略サイトにまとまっていません"])}
+<div class="note"><b>表記：</b>サイトや掲示板によって「不朽ヒーロー」「不屈ヒーロー」と表記が揺れていますが同じものを指しています。</div>
+`};
+
+P.party = {title:"おすすめ編成・配置", body:()=>`
+<h2>編成の考え方：役割で組む</h2>
+${tbl(["役割","目安","候補"],[
+ ["火力","1〜2体",hlink("ワニキング")+"、"+hlink("ブラストネコ")+"、"+hlink("剣霊")+"、"+hlink("聖使者")],
+ ["コイン・魔力","1セット",hlink("コイン式機械")+"＋"+hlink("妖精シンガー")+"（中盤までにシンガー2〜3体）"],
+ ["足止め（スタン・減速）","1〜2体",hlink("厳冬の心")+"、"+hlink("玄武")+"、"+hlink("グリフィン")],
+ ["伸ばし役","任意",hlink("炎の魔竜")+"（味方の種族をばらけさせる）"]
+])}
+<h2>おすすめ編成例</h2>
+<h3>基本形（バトロワ・共通）</h3>
+<p>${hlink("コイン式機械")}＋${hlink("妖精シンガー")}で幸運コインと魔力を回し、${hlink("ワニキング")}・${hlink("剣霊")}・${hlink("ブラストネコ")}で削る。</p>
+<h3>終結者軸</h3>
+<p>${hlink("コイン式機械")}でコインを供給し、${hlink("終結者")}を早めに第2形態へ。妖精シンガーと終結者で魔力回復を重ねる。</p>
+<h3>序盤の無課金向け</h3>
+<p>${hlink("厳冬の心")}（1-8報酬）＋${hlink("緋色の鎌")}（1-4報酬）＋${hlink("ブードゥー祭祀")}（共同作戦報酬）で、ガチャに頼らず戦える形。</p>
+<h3>共同作戦エクストラ以上</h3>
+<p>Lv12以上の${hlink("剣霊")}で割合ダメージを入れ、${hlink("玄武")}などのスタン役で止める。仲間は<a href="#pettier">炎宝</a>がおすすめ。</p>
+<h2>配置の目安</h2>
+<p>盤面を上段・中段・下段、左〜右で考えたときの、攻略サイトで推奨されている位置です。</p>
+${tbl(["位置","おすすめ"],[
+ ["上段・左寄り",hlink("緋色の鎌")+"（斥候役）"],
+ ["上段・中央〜右",hlink("ワニキング")+"、"+hlink("ホタル")+"（スタン役の横）"],
+ ["中段・左寄り",hlink("ブラストネコ")+"、"+hlink("聖使者")+"（神格化後）、"+hlink("暗影ハンター")],
+ ["中段（横一列）",hlink("終結者")+"、"+hlink("剣霊")],
+ ["中段・下段の右寄り",hlink("厳冬の心")+"、"+hlink("玄武")+"、"+hlink("グリフィン")+"、"+hlink("ブードゥー祭祀")+"（上部通路をスタン）"],
+ ["下段・中央",hlink("妖精シンガー")+"、"+hlink("死霊術の魔女")+"、"+hlink("炎の魔竜")],
+ ["敵の出現地点付近",hlink("コイン式機械")+"、ハンター"]
+])}
+`};
+
+P.growth = {title:"育成まとめ（領主・ヒーロー）", body:()=>`
+<h2>育成の優先順位</h2>
+${ol(["<b>領主</b>を強化（レベルと名声が戦力全体の底上げ）","主力の神話を<b>1〜2体に絞って</b>レベル上げ（まずワニキングLv12が目標）","サポート（コイン式機械・妖精シンガー）を揃える","仲間（ペット）・所蔵品・専用武器を伸ばす"])}
+<h2>ヒーローの育成</h2>
+${tbl(["項目","内容"],[
+ ["神話のレベル上げ","凸（同名の重ね）は不要。お金（金貨）と<b>神話エキス</b>を使う。神話エキスは氷晶と交換で入手"],
+ ["節目のレベル","Lv3/9/15で攻撃・攻速アップ、Lv6/12で新スキルや固有強化。各レベルで会心ダメージ+1%"],
+ ["Lv13","不朽ヒーロー解放条件の目安"],
+ ["Lv16以降","専用武器（聖物）の解放が必要"],
+ ["Lv15以降の素材","必要数は未確認（掲示板で質問あり）"]
+])}
+<h2>領主の育成</h2>
+${ul(["メインステージのクリアと「旅行」（放置）で経験値を獲得","バトル中は幸運コインで「領主強化」もできる","ダンジョン対策として領主を早めに入れる立ち回りも"])}
+<h2>育成のコツ</h2>
+${ul(["高難度では<b>攻撃速度・会心率・固定追撃ダメージ</b>の3要素を意識する","デイリー任務、イベント、ギルド、共同作戦を毎日回して素材を貯める","熱エネルギーは余りやすいという報告あり（ノーマル1日10回以上でも溜まる）"])}
+`};
+
+P.pets = {title:"仲間（ペット）", body:()=>`
+<p>仲間はバトル中に盤面に召喚するヒーローとは別のシステムで、<b>領主のそばで戦うサポート役</b>です。</p>
+<h2>解放と育成</h2>
+${tbl(["項目","内容"],[
+ ["機能解放","領主Lv16以上＋サーバー開始から約12日"],
+ ["解放","専用ピースを<b>50個</b>集める"],
+ ["ピース入手","仲間集結ガチャ、期間限定ショップ交換、ログイン・イベント"],
+ ["レベルアップ","アーモンドクッキーを消費"],
+ ["昇格（ランクアップ）","ピースを消費。エリート → レア → レジェンド → 神話。昇格で新スキルを覚えることが多い"]
+])}
+<p>低ランクで見切らず、一定ランクまで上げてから評価するのがおすすめです。</p>
+<h2>仲間一覧</h2>
+${tbl(["仲間","ランク","特徴"],[["炎宝","レジェンド","共同作戦の火力役。黄金の鎚★3以上で特に強い"],["銀星","レジェンド","バトロワ向け"],["熊二郎","―","領主の火力を伸ばす"],["幻夢象","―","2025/12/3追加"]])}
+<p>どれから育てるかは<a href="#pettier">仲間ランキング</a>を参照。</p>
+`};
+
+P.relics = {title:"所蔵品一覧", body:()=>`
+<p>所蔵品はバトル全体にかかるパッシブ効果を持つアイテムです。現在確認できる神話所蔵品は8種類。</p>
+${tbl(["所蔵品","評価","効果"],[
+ ["金庫",badge("SS"),"銀貨回収（入手していればバトル中に自動で使われる）"],
+ ["黄金の鎚",badge("SS"),"ヒーローバフ。★3以上で仲間「炎宝」が特に強くなる"],
+ ["エルフのマイク",badge("S"),"ヒーローバフ"],
+ ["保全契約書",badge("S"),"幸運コイン回収"],
+ ["賢者の笛",badge("S"),"幸運コイン回収"],
+ ["悪魔経典",badge("A"),"祈願失敗の保険"],
+ ["繁栄の音",badge("A"),"ヒーロー数上限アップ"],
+ ["多面サイコロ",badge("B"),"祈願成功率アップ"]
+],"tier")}
+<p class="src">出典：Gamerch 所蔵品一覧。入手方法の詳細はまとまっていません。事前登録報酬では「厳冬の悲しみ」が配布されました。</p>
+`};
+
+P.weapon = {title:"専用武器・乗り物・スキン", body:()=>`
+<h2>専用武器</h2>
+${ul(["2025年8月14日のアップデートで実装。ヒーローごとの専用装備","解放目安：領主Lv15以上＋サーバー開始から約12〜14日","ヒーローをLv16以上にするには専用武器（ゲーム内表記「聖物」）の解放が必要","強化素材も同時実装。基礎育成箱の中身が変更された"])}
+<h2>乗り物</h2>
+${ul(["2026年9月23日（Ver.1.1.6）で実装","第一弾：レア品質「魔法の絨毯」（バトロワショップで交換）","伝説級「反重力浮遊ドライバー」が近日登場予定"])}
+<h2>スキン</h2>
+${tbl(["スキン","対象","入手"],[["剣魂（ケンタマ）","―","事前登録特典（日本限定）"],["光コア・零式","ワニキング","カラーパール"],["炎の仲裁者","聖使者","イベント"],["カラースキン","炎の魔竜","解放方法は未確認（掲示板で質問中）"]])}
+`};
+
+P.items = {title:"通貨・アイテム一覧", body:()=>`
+${tbl(["名前","種類","主な入手","主な用途"],[
+ ["氷晶","課金石","課金、イベント、ギフトコード","神話ヒーロー交換（3000個）、神話エキス交換、募集"],
+ ["封印解除の鍵","ガチャチケット","ログイン、ギフトコード","ヒーロー募集"],
+ ["金貨","通貨","各種報酬","育成全般"],
+ ["神話エキス","育成素材","氷晶と交換","神話ヒーローのレベルアップ"],
+ ["募集ポイント","ポイント","募集","2000貯めると神話募集"],
+ ["アーモンドクッキー","育成素材","各種報酬","仲間のレベルアップ"],
+ ["仲間ピース","育成素材","仲間集結ガチャ、ショップ","仲間の解放（50個）・昇格"],
+ ["カラーパール","交換通貨","―","スキン交換"],
+ ["熱エネルギー","スタミナ系","自然回復など","余りやすいという報告あり"],
+ ["提灯・太鼓など","イベント通貨","期間限定イベント","神話選択宝箱、不朽ヒーローのカケラ等と交換"],
+ ["銀貨","バトル内","敵撃破、ハンター、金庫","召喚・強化（バトル終了で消える）"],
+ ["幸運コイン","バトル内","九死一生任務、コイン式機械","領主強化、祈願、剣霊・終結者の強化"],
+ ["修復ルーン","不明","入手方法未確認","―"]
+])}
+`};
+
+P.gacha = {title:"ガチャ（募集）", body:()=>`
+${tbl(["種類","内容"],[
+ ["ヒーロー募集","封印解除の鍵などで回す基本のガチャ。神話の排出率は2.0%"],
+ ["10倍募集","10回分まとめて。クイック募集は10倍募集のみ"],
+ ["神話募集","募集ポイントが2000貯まると実行可能。演出動画はスキップ可（2025/8/14〜）"],
+ ["仲間集結ガチャ","仲間（ペット）のピースが出る"],
+ ["祈願（バトル内）","幸運コインでヒーローを呼ぶ。高レアほど成功率が低い"]
+])}
+<h2>ガチャの考え方</h2>
+${ul(["神話は<b>未入手なら氷晶3000個で好きなものと確定交換</b>できる。欲しい神話がいるなら交換も視野に","ブラストネコ・ホタルはガチャから出ないので、イベントのために氷晶を残しておくのも手","毎日ログインで最大3000連分の召喚ができるキャンペーンが実施されたことがある","無課金・微課金でも十分遊べるバランスという評価が多い。最もお得なのは月パス（倍速・動画スキップ）"])}
+`};
+
+P.modes = {title:"バトルの基本ルール", body:()=>`
+${ul(["敵（感染者）は通路を進み、盤面上の数が上限を超えるとゲームオーバー","一定ウェーブごとにボス。時間切れも敗北扱いになりやすい","召喚されるヒーローや強化はランダム。ボス撃破などでランダムにヒーローが召喚されることも","<b>九死一生任務</b>：敵数が規定ラインを一度超えると幸運コイン200枚","<b>ダンジョン</b>：開始時に発生。クリアしないと敗北（バトロワでは大幅減点）","倍速：月パスで序盤2倍速、進行に応じて3倍速。2人チームはどちらかが月パスを持っていれば両方で利用可"])}
+<h2>難易度</h2>
+<p>ノーマルは進めやすい一方、ハードでは敵の火力と物量が急に上がり、同じ編成では行き詰まりやすくなります。共同作戦はノーマル → エクストラ…と段階があります。</p>
+`};
+
+P.coop = {title:"共同作戦", body:()=>`
+<p>仲間と戦力を共有し、協力して巨大ボスに挑むモード（最大3人・ゲーム内チャットあり）。</p>
+<h2>ポイント</h2>
+${ul(["<b>サーバーをまたいでマッチング</b>するため、他サーバーの強いプレイヤーに手伝ってもらえる","大型敵への火力が重視される。ブラストネコ・剣霊（割合ダメージ）が活躍","ノーマル20階クリアで<a href=\"#hero-voodoo\">ブードゥー祭祀</a>を入手","エクストラ以上では<b>Lv12以上の剣霊</b>を使う攻略が定番。スタン役に玄武","仲間は<b>炎宝</b>（黄金の鎚★3以上で特に強力）、領主火力なら熊二郎","掲示板の雑談スレではダンジョン破壊用のエクストラ「キャリー」募集も見られる"])}
+<h2>ギルド連合作戦</h2>
+<p>2025年8月14日に正式実装されたギルド単位のコンテンツ。報酬はギルド画面から確認できます。</p>
+`};
+
+P.br = {title:"バトルロワイヤル", body:()=>`
+<p>2人1組のチームで最大8人（4チーム）が戦い、最後まで残ったチームが勝利するデュオバトロワ。シーズン制です。</p>
+<h2>ポイント</h2>
+${ul(["開始時に表示される<b>特殊ルール</b>は、バトル中に画面下の「思考」アイコンから再確認できる","開始時のダンジョンを放置すると大幅減点。序盤から少しずつ削る","炎の魔竜の攻撃バフは相方のヒーローにも乗る","仲間は<b>銀星</b>がおすすめ","共同作戦とは求められる性能が違うので、編成を分けて考える","マッチングでレベル差が大きい相手と当たるという不満の声もある"])}
+<h2>シーズン</h2>
+${tbl(["シーズン","開始","備考"],[["S3","2025/08/15 12:00",""],["S10「晴れた海島の光」","2026/09/23","乗り物「魔法の絨毯」がバトロワショップに"]])}
+`};
+
+P.other = {title:"その他のコンテンツ", body:()=>`
+${tbl(["コンテンツ","内容"],[
+ ["メインステージ","章-ステージ形式。1-2でガチャ解放、1-4で緋色の鎌、1-8で厳冬の心。ノーマル／ハード"],
+ ["精鋭任務","サーバーをまたいでマッチング可能"],
+ ["初心者試練","日替わりミッション。7日目で終結者（2025年7月時点）"],
+ ["栄誉チャレンジ","シーズン制。2026/9/23からシーズン5"],
+ ["深淵挑戦","2026/9時点で近日開始予定"],
+ ["無限ステージ","ストアのスクリーンショットに登場"],
+ ["ランクマッチ","キャラクターの入手手段としても言及あり"],
+ ["旅行","放置で経験値と報酬が貯まる。月パスで高速化"],
+ ["ギルド","ギルドパス、ギルド連合作戦、アイテム相互援助（予告）"],
+ ["漁場","流光漁場・星月漁場（2026/9予告）"]
+])}
+`};
+
+P.codes = {title:"ギフトコード・招待コード", body:()=>`
+<h2>ギフトコードの入力方法</h2>
+${ol(["ホーム画面左上の自分のアイコンをタップ","「設定」タブを開く","「ギフトコード」欄に入力して交換 → 報酬はメールボックスへ"])}
+<p>大文字・小文字、0とOの打ち間違いに注意。コピー＆ペーストが確実です。</p>
+<h2>ギフトコード一覧</h2>
+${tbl(["コード","報酬"],[
+ [code("PETA333"),"封印解除の鍵×10"],
+ [code("PETA777"),"氷晶×100"],
+ [code("PETA888"),"金貨×1000、船影ヒーロー宝箱×5"]
+])}
+<div class="warn"><b>有効期限は未確認：</b>攻略wikiに掲載されているコードですが、期限・現在の有効性は記載がありません。最新コードは<a href="https://x.com/PGFightJP" target="_blank" rel="noopener">公式X（@PGFightJP）</a>やアップデート告知と同時に発表されることが多いです。</div>
+<h2>招待コード</h2>
+${ul(["<b>入力場所</b>：「バトル」画面左上の「招待」（雪だるまアイコン）内の検索欄。アイコンは<b>レベル3</b>で表示される","<b>自分のコード</b>：<b>ランク10</b>になると確認できる","入力すると報酬（ゲーム内の石）がもらえる","招待コードは各攻略サイトの招待コード掲示板で交換されている（招待URLの貼り付けは禁止の掲示板が多い）"])}
+`};
+function code(c){return `<span class="code">${c}</span><button class="copy" type="button" data-copy="${c}">コピー</button>`}
+
+P.faq = {title:"よくある質問（Q&A）", body:()=>`
+<p>各攻略サイトの質問掲示板・コメント欄でよく出る質問と回答をまとめました。</p>
+<dl class="qa">
+<dt>リセマラはするべき？</dt><dd>必須ではありません。神話は氷晶3000個で交換でき、厳冬の心は1-8で確定入手、ブラストネコはガチャから出ません。<a href="#reroll">リセマラページ</a></dd>
+<dt>ギフトコードはどこで入力する？</dt><dd>左上の自分のアイコン →「設定」→「ギフトコード」。<a href="#codes">コード一覧</a></dd>
+<dt>招待コードの入力場所がわからない</dt><dd>「バトル」画面の左上にある「招待」（雪だるまアイコン）の中に検索欄があります。アイコンはレベル3になると表示されます。</dd>
+<dt>自分の招待コードはどこ？</dt><dd>ランク10になると確認できます。</dd>
+<dt>バトロワの特殊ルールを読む前に消えてしまう</dt><dd>バトル中、画面下の「思考」アイコンをタップすると確認できます。</dd>
+<dt>ワニキングをLv16にしようとしたら「聖物」が必要と出た</dt><dd>「聖物」は専用武器のことです。専用武器を解放するとLv16以降に上げられます。</dd>
+<dt>ランクの上限は？</dt><dd>2025年8月時点で30。スタミナを全部使っても到達まで3〜4週間が目安です。</dd>
+<dt>銀貨が足りない（金策は？）</dt><dd>ハンターをLv6以上にしてスキルで回収、所蔵品「金庫」の入手が定番。九死一生任務の達成後にハンターを出して放置するのがおすすめです。</dd>
+<dt>倍速にするには？</dt><dd>月パスが必要（序盤は2倍速、進行で3倍速）。2人チームはどちらかが月パスを持っていれば両方で使えます。</dd>
+<dt>課金するなら何がお得？</dt><dd>映画鑑賞月パスと特典月パス（2025年8月時点）。動画視聴が不要になり、高速進行に上限がなくなります。</dd>
+<dt>共同作戦がクリアできない</dt><dd>共同作戦はサーバーをまたいでマッチングするので強いプレイヤーに手伝ってもらえます。エクストラ以上はLv12以上の剣霊が定番です。</dd>
+<dt>熱エネルギーが余る</dt><dd>ノーマルを1日10回以上回しても溜まっていく、という報告が多く、余りやすいようです。</dd>
+<dt>聖使者が消えた</dt><dd>仕様です。神格化（25%）に失敗するとユニットが消えます。Lv12で確率+10%。</dd>
+<dt>炎の魔竜が孵化しない</dt><dd>卵は10秒ごとに2.5%の確率で孵化します（Lv6で+2.5%）。運次第で、孵化せずに終わることもあります。</dd>
+</dl>
+<h2>未解決の質問</h2>
+<p>掲示板で質問されているものの、まだ回答が見つかっていないものです。</p>
+${ul(["修復ルーンの入手方法","炎の魔竜のカラースキンを入手したのに解放できない","神話ヒーローLv15以降に必要な素材の数","イベント交換で神話選択宝箱と不朽ヒーローのカケラ、どちらを優先すべきか"])}
+`};
+
+P.tips = {title:"小ネタ・豆知識", body:()=>`
+${ul([
+ "タイトル画面でよく見かける女の子は「大剣ペンギン」",
+ "敵の正式な名称は「感染者」",
+ "剣霊の声は2025年8月14日のアップデートで渋い声に変更された",
+ "神話ヒーローにお気に入りマークを付けると、合成先として優先的に表示される",
+ "クイック募集は10倍募集のみ可能",
+ "共同作戦と精鋭任務はサーバーをまたいでマッチングする",
+ "炎の魔竜の「最強生物」は<b>味方</b>の種族の数で強くなる（敵の種族ではない）",
+ "終結者はLv6でスーパーアーマーに必要な幸運コインが15枚→10枚になる",
+ "ブードゥー祭祀の猛毒拡散は10秒間で合計14000%相当のダメージ",
+ "ホタルを9回融合させるとワニキングを上回る性能になるとされる",
+ "オープンチャット（オプチャ）で情報交換しているプレイヤーも多い。人気のオプチャは流れが速い",
+ "App Storeの評価は4.3（約8,900件）。キャラ・音楽・協力プレイが好評、マッチングや課金額への不満も"
+])}
+`};
+
+P.glossary = {title:"用語集", body:()=>`
+${tbl(["用語","意味"],[
+ ["ペタペン","ペタペタペンギン団の略称"],
+ ["領主","プレイヤー（主人公）。男女から選べる"],
+ ["感染者","敵（ゾンビ）の名称"],
+ ["神話","ヒーローの最高レアリティ（その上に不朽）"],
+ ["不朽（不屈）","神話2体を育てて解放する上位ヒーロー"],
+ ["募集","ガチャのこと"],
+ ["祈願","バトル内で幸運コインを使ってヒーローを呼ぶこと"],
+ ["九死一生任務","敵数が規定ラインを超えると幸運コイン200枚がもらえるバトル内ミッション"],
+ ["神格化","聖使者の形態変化（成功率25%、失敗で消滅）"],
+ ["スーパーアーマー","終結者の第2形態"],
+ ["融合","ホタル同士を吸収させて強化する仕組み"],
+ ["合成事故","狙っていた神話の素材を、別の合成に使ってしまうこと"],
+ ["聖物","専用武器のゲーム内表記"],
+ ["所蔵品","バトル全体にかかる効果を持つアイテム"],
+ ["仲間","ペット。領主のそばで戦うサポート役"],
+ ["バトロワ","バトルロワイヤル（デュオ・最大8人）"],
+ ["共同作戦","最大3人の協力ボス戦"],
+ ["キャリー","強いプレイヤーが弱いプレイヤーを手伝ってクリアさせること"],
+ ["新サバ","新しく開設されたサーバー"],
+ ["月パス","月額パス。倍速・動画スキップなど"]
+])}
+`};
+
+P.sources = {title:"参考・出典", body:()=>`
+<p>このwikiは以下の情報をもとに作成しました（2026年10月20日確認）。各サイトの最新情報もあわせて確認してください。</p>
+<h2>公式</h2>
+${ul(['<a href="https://jp-penguin.morefungaming.com/" target="_blank" rel="noopener">公式サイト</a>','<a href="https://x.com/PGFightJP" target="_blank" rel="noopener">公式X @PGFightJP</a>','<a href="https://apps.apple.com/jp/app/id6742937695" target="_blank" rel="noopener">App Store（更新情報・レビュー）</a>','<a href="https://play.google.com/store/apps/details?id=com.pgfight.an.jp" target="_blank" rel="noopener">Google Play</a>'])}
+<h2>攻略サイト</h2>
+${ul(['<a href="https://gamerch.com/penguin/" target="_blank" rel="noopener">ペタペン攻略Wiki（Gamerch）</a>：ヒーロー個別、総合評価、リセマラ、所蔵品、ギフトコード、序盤、小ネタ','<a href="https://games.appmatch.jp/gamewiki/petapetapenguin/" target="_blank" rel="noopener">スマホゲームNavi（AppMatch）</a>：ティア表、仲間、サーバー変更、解放条件','<a href="https://dengekionline.com/article/202504/40625" target="_blank" rel="noopener">電撃オンライン</a>：システム解説・プレイレビュー','<a href="https://appmedia.jp/?p=78795695" target="_blank" rel="noopener">AppMedia</a>：リリース情報・事前登録特典','<a href="https://www.appbank.net/2025/08/13/iphone-application/2798887.php" target="_blank" rel="noopener">AppBank</a>：モード紹介'])}
+<h2>質問・掲示板</h2>
+${ul(['<a href="https://gamerch.com/penguin/918946" target="_blank" rel="noopener">Gamerch 雑談・質問掲示板</a>','<a href="https://gamewith.jp/gamedb/13274/bbs" target="_blank" rel="noopener">GameWith 掲示板</a>'])}
+<div class="note"><b>記載方針：</b>サイト間で情報が異なる場合は両方を併記し、確認できない情報は「要確認」「未確認」としています。ゲームの仕様はアップデートで変わるため、数値は目安として扱ってください。</div>
+`};
+
+/* ---------- ルーティング ---------- */
+const main = document.getElementById("main");
+function show(id, jump){
+  if(!P[id]) id = "top";
+  const pg = P[id];
+  const crumb = pg.crumb || (id==="top" ? "トップ" : `<a href="#top">トップ</a> ＞ ${pg.title}`);
+  main.innerHTML = `<div class="crumb">${crumb}</div><h1>${pg.title}</h1><div class="updated">最終更新：${UPDATED}</div>${pg.body()}`;
+  document.querySelectorAll(".side a").forEach(a=>a.classList.toggle("on",a.dataset.go===id));
+  document.getElementById("side").classList.remove("open");
+  document.getElementById("menuBtn").setAttribute("aria-expanded","false");
+  if(jump){const el=document.getElementById(jump); if(el){el.scrollIntoView(); return;}}
+  window.scrollTo(0,0);
+}
+function go(id, jump){
+  show(id, jump);
+  try{ if(location.hash.slice(1)!==id) history.replaceState(null,"","#"+id); }catch(e){}
+}
+document.addEventListener("click",e=>{
+  const cp = e.target.closest("[data-copy]");
+  if(cp){
+    const t = cp.dataset.copy;
+    navigator.clipboard?.writeText(t).then(()=>{cp.textContent="コピーしました"},()=>{selectCode(cp)}) ?? selectCode(cp);
+    return;
+  }
+  const a = e.target.closest('a[href^="#"]');
+  if(!a) return;
+  e.preventDefault();
+  go(a.getAttribute("href").slice(1), a.dataset.jump);
+  document.getElementById("q").value="";
+});
+function selectCode(btn){const s=btn.previousElementSibling;const r=document.createRange();r.selectNodeContents(s);const sel=getSelection();sel.removeAllRanges();sel.addRange(r);btn.textContent="選択しました";}
+document.getElementById("menuBtn").addEventListener("click",()=>{
+  const s=document.getElementById("side"); const open=s.classList.toggle("open");
+  document.getElementById("menuBtn").setAttribute("aria-expanded",String(open));
+});
+window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
+
+/* ---------- 検索 ---------- */
+let INDEX = null;
+function buildIndex(){
+  const tmp = document.createElement("div");
+  INDEX = Object.entries(P).map(([id,pg])=>{tmp.innerHTML = pg.body(); return {id,title:pg.title,text:tmp.textContent.replace(/\s+/g," ")};});
+}
+document.getElementById("q").addEventListener("input",e=>{
+  const q = e.target.value.trim();
+  if(!q){ show(location.hash.slice(1)||"top"); return; }
+  if(!INDEX) buildIndex();
+  const hits = INDEX.filter(p=>p.title.includes(q)||p.text.includes(q))
+    .sort((a,b)=>(b.title.includes(q)?1:0)-(a.title.includes(q)?1:0));
+  const esc = s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+  main.innerHTML = `<div class="crumb"><a href="#top">トップ</a> ＞ 検索</div><h1>「${esc(q)}」の検索結果</h1><div class="updated">${hits.length}件</div>` +
+    (hits.length ? `<ul class="results">${hits.map(h=>{const i=h.text.indexOf(q);const snip=i<0?h.text.slice(0,80):h.text.slice(Math.max(0,i-30),i+60);return `<li><a href="#${h.id}"><b>${h.title}</b></a><div class="src">…${esc(snip)}…</div></li>`}).join("")}</ul>` : `<p>見つかりませんでした。別の言葉（ヒーロー名、「コード」「銀貨」など）で試してください。</p>`);
+});
+
+renderSide();
+show(location.hash.slice(1) || "top");
+</script>
