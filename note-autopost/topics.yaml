@@ -1,0 +1,11 @@
+# テーマ一覧（DESIGN.md §5.1）
+# pick は status: pending のうち priority 昇順で1件選ぶ（Phase 2 で実装）
+- id: pmp-study-plan
+  theme: 社会人がPMPを3か月で取るための学習計画
+  audience: IT系PM、資格勉強を始めたい人
+  message: 毎日の小さな積み上げと模試の回し方が鍵
+  cta: 自分の学習計画を書き出してみる
+  tags: [PMP, 資格, プロジェクトマネジメント]
+  length: 3000
+  status: pending
+  priority: 1

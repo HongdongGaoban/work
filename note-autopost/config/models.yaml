@@ -1,0 +1,5 @@
+# 役割ごとのモデル名・max_tokens（Phase 2 で使用）
+research: { model: claude-sonnet-5-5, max_tokens: 8000 }
+outline:  { model: claude-sonnet-5-5, max_tokens: 4000 }
+write:    { model: claude-opus-5-5,   max_tokens: 16000 }
+review:   { model: claude-opus-5-5,   max_tokens: 16000 }
